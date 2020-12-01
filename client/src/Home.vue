@@ -28,11 +28,19 @@
         <v-col cols="6">
           <v-card width="500px" class="px-5">
             <v-card-title> Créer un salon</v-card-title>
-            <v-text-field label="Entrer un pseudo"></v-text-field>
+            <v-text-field
+              label="Entrer un pseudo"
+              v-model="pseudo"
+            ></v-text-field>
             <v-text-field label="Entrer un nom de salon"></v-text-field>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn icon color="green">
+              <v-btn
+                icon
+                color="green"
+                :to="{ name: 'room', params: { pseudo } }"
+                @click="sendInfo"
+              >
                 <v-icon> mdi-check</v-icon>
               </v-btn>
             </v-card-actions>
@@ -42,3 +50,18 @@
     </v-container>
   </div>
 </template>
+<script>
+import { eventBus } from "./eventBus";
+export default {
+  data() {
+    return {
+      pseudo: "",
+    };
+  },
+  methods: {
+    sendInfo() {
+      eventBus.$emit("sendInfo", this.pseudo);
+    },
+  },
+};
+</script>

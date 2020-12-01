@@ -18,11 +18,11 @@
         <v-card width="400px" height="600px">
           <v-col cols="12">
             <v-card class="p-4" height="500px">
-              <v-card class="d-flex align-end flex-column">
-                <div v-for="message in messages" :key="message.id">
-                  <p>{{ message[0].msg }}</p>
-                </div>
-              </v-card>
+              <div v-for="message in messages" :key="message.id">
+                <v-card class="d-flex align-end flex-column">
+                  <p>{{ message[0].username }} :{{message[0].msg}}</p>
+                </v-card>
+              </div>
             </v-card>
           </v-col>
           <v-card-actions>
@@ -48,6 +48,7 @@ var options = {
 };
 
 export default {
+  props: ["pseudo"],
   data() {
     return {
       src: "",
@@ -65,7 +66,9 @@ export default {
     });
   },
   mounted() {
-    this.username = prompt("Entrez votre pseudo..", "...");
+    console.log(this.pseudo);
+    console.log("ok");
+    this.username = this.pseudo;
 
     if (!this.username) {
       this.username = "...";
@@ -98,7 +101,7 @@ export default {
       });
     },
     sendMessage() {
-      this.socket.emit("msg", this.msg);
+      this.socket.emit("msg", { message: this.msg, user: this.username });
       this.msg = "";
     },
   },

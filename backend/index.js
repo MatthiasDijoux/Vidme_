@@ -50,11 +50,11 @@ models.sequelize.sync().then(function () {
 });
 io.on('connection', socket => {
 	console.log('Client connected using websocket');
-	setInterval(() => {
+	/* setInterval(() => {
 		const frame = wCap.read();
 		const image = cv.imencode('.jpg', frame).toString('base64');
 		socket.broadcast.emit('image', image);
-	}, 1000 / FPS);
+	}, 1000 / FPS); */
 
 	socket.emit('loggedIn', {
 		users: users.map(s => s.username),
@@ -72,8 +72,8 @@ io.on('connection', socket => {
 	socket.on('msg', msg => {
 		let message = {
 			index: index,
-			username: 'user1',
-			msg: msg
+			username: msg['user'],
+			msg: msg['message']
 		}
 		let msgEnvoi = []
 		msgEnvoi.push(message);
