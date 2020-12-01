@@ -1,0 +1,34 @@
+<body>
+    <p id="test"></p>
+    <img id="image">
+    <button id="close"></button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.1/socket.io.js"
+      integrity="sha512-vGcPDqyonHb0c11UofnOKdSAt5zYRpKI4ow+v6hat4i96b7nHSn8PQyk0sT5L9RECyksp+SztCPP6bqeeGaRKg=="
+      crossorigin="anonymous"></script>
+    salut
+    <script>
+      const socket = io.connect('http://localhost:3001');
+      const imageElm = document.getElementById('image');
+      let btn = document.getElementById('close').onclick = close;
+  
+      function close() {
+        socket.close()
+        imageElm.src = ``
+        
+      }
+      socket.on('connection', () => {
+        console.log(socket.connected);
+      });
+  
+      socket.on('image', data => {
+        switch (data.action) {
+          case 'Stream':
+            let image = data.data
+            imageElm.src = `data:image/jpeg;base64,${image}`;
+            break;
+        }
+      });
+    </script>
+  </body>
+  
+  </html>
