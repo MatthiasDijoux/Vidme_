@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "base64-arraybuffer": "^0.2.0",
+    "basic-vue-chat": "^0.3.5",
     "core-js": "^3.4.3",
     "socket.io": "^3.0.3",
     "socket.io-client": "^3.0.3",

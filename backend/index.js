@@ -43,18 +43,29 @@ wCap.set(cv.CAP_PROP_FRAME_HEIGHT, 600);
 let users = [];
 let messages = [];
 let index = 0;
-
+var frame = null;
+var image = null;
 /* Create everything automatically with sequelize ORM */
 models.sequelize.sync().then(function () {
 
 });
 io.on('connection', socket => {
 	console.log('Client connected using websocket');
-	/* setInterval(() => {
-		const frame = wCap.read();
-		const image = cv.imencode('.jpg', frame).toString('base64');
+	/* var interval = null;
+	interval = setInterval(() => {
+		frame = wCap.read();
+		image = cv.imencode('.jpg', frame).toString('base64');
 		socket.broadcast.emit('image', image);
-	}, 1000 / FPS); */
+	}, 1000 / FPS);
+	socket.on('cutCamera', data => {
+		console.log(data)
+		clearInterval(interval);
+		image = null;
+		frame = null;
+		interval = null
+		wCap.release();
+	}) */
+
 
 	socket.emit('loggedIn', {
 		users: users.map(s => s.username),
@@ -78,7 +89,7 @@ io.on('connection', socket => {
 		let msgEnvoi = []
 		msgEnvoi.push(message);
 
-		io.emit('msg', msgEnvoi);
+		socket.broadcast.emit('msg', msgEnvoi);
 
 		index++;
 	});

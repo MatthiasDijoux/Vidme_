@@ -13,33 +13,22 @@
         <v-card width="1000px" height="600px">
           <img id="image" :src="src" height="100%" width="100%" />
         </v-card>
+        <v-btn @click="cutCamera"> test</v-btn>
       </v-col>
       <v-col cols="4">
-        <v-card width="400px" height="600px">
-          <v-col cols="12">
-            <v-card class="p-4" height="500px">
-              <div v-for="message in messages" :key="message.id">
-                <v-card class="d-flex align-end flex-column">
-                  <p>{{ message[0].username }} :{{message[0].msg}}</p>
-                </v-card>
-              </div>
-            </v-card>
-          </v-col>
-          <v-card-actions>
-            <v-text-field label="Entrez votre message" v-model="msg">
-            </v-text-field>
-            <v-btn icon color="black" @click="sendMessage" :disabled="!msg">
-              <v-icon> mdi-arrow-right-circle-outline </v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+        <basic-vue-chat
+          @newOwnMessage="onNewOwnMessage"
+          :new-message="test"
+          :initial-feed="feed"
+          :title="'Chat'"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
-
     <script>
 import { io } from "socket.io-client";
+import basicVueChat from "basic-vue-chat";
 var options = {
   rememberUpgrade: true,
   transports: ["websocket"],
@@ -49,6 +38,9 @@ var options = {
 
 export default {
   props: ["pseudo"],
+  components: {
+    "basic-vue-chat": basicVueChat,
+  },
   data() {
     return {
       src: "",
@@ -56,6 +48,8 @@ export default {
       username: "",
       messages: [],
       msg: "",
+      feed: [],
+      test: {},
       users: [],
       socket: io.connect("http://127.0.0.1:3000/", options),
     };
@@ -66,8 +60,6 @@ export default {
     });
   },
   mounted() {
-    console.log(this.pseudo);
-    console.log("ok");
     this.username = this.pseudo;
 
     if (!this.username) {
@@ -78,7 +70,12 @@ export default {
   },
   methods: {
     getCamera() {},
-    cutCamera() {},
+    onNewOwnMessage(message) {
+      this.socket.emit("msg", { message: message, user: this.username });
+    },
+    cutCamera() {
+      this.socket.emit("cutCamera", "cut");
+    },
     joinServer() {
       this.socket.on("loggedIn", (data) => {
         this.messages = data.messages;
@@ -98,6 +95,12 @@ export default {
       });
       this.socket.on("msg", (message) => {
         this.messages.push(message);
+        this.feed.push({
+          id: message[0].index,
+          author: message[0].username,
+          contents: message[0].msg,
+          date: "16:30",
+        });
       });
     },
     sendMessage() {

@@ -51,16 +51,15 @@
   </div>
 </template>
 <script>
-import { eventBus } from "./eventBus";
 export default {
   data() {
     return {
       pseudo: "",
     };
   },
+  computed: {},
   methods: {
     sendInfo() {
-      eventBus.$emit("sendInfo", this.pseudo);
     },
   },
 };
