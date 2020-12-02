@@ -13,7 +13,6 @@
         <v-card width="1000px" height="600px">
           <img id="image" :src="src" height="100%" width="100%" />
         </v-card>
-        <v-btn @click="cutCamera"> test</v-btn>
       </v-col>
       <v-col cols="4">
         <basic-vue-chat
@@ -22,6 +21,16 @@
           :initial-feed="feed"
           :title="'Chat'"
         />
+      </v-col>
+      <v-col cols="12">
+        <v-card class="m-5">
+          <v-card-title> Utilisateur connectés </v-card-title>
+          <v-col class="text-center">
+            <v-chip class="ma-2" v-for="user in users" :key="user.id">
+              {{ user }}
+            </v-chip>
+          </v-col>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -60,12 +69,15 @@ export default {
     });
   },
   mounted() {
+    document.getElementsByClassName("input__button")[0].innerHTML = "Envoyer";
+    document.getElementsByClassName(
+      "input__field"
+    )[0].firstElementChild.placeholder = "Ecrivez votre message ici";
     this.username = this.pseudo;
 
     if (!this.username) {
       this.username = "...";
     }
-
     this.joinServer();
   },
   methods: {
@@ -110,3 +122,8 @@ export default {
   },
 };
 </script>
+<style>
+.window {
+  height: 600px !important;
+}
+</style>

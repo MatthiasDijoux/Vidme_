@@ -51,32 +51,22 @@ models.sequelize.sync().then(function () {
 });
 io.on('connection', socket => {
 	console.log('Client connected using websocket');
-	/* var interval = null;
-	interval = setInterval(() => {
+	var interval = null;
+	/* interval = setInterval(() => {
 		frame = wCap.read();
 		image = cv.imencode('.jpg', frame).toString('base64');
 		socket.broadcast.emit('image', image);
-	}, 1000 / FPS);
-	socket.on('cutCamera', data => {
-		console.log(data)
-		clearInterval(interval);
-		image = null;
-		frame = null;
-		interval = null
-		wCap.release();
-	}) */
-
+	}, 1000 / FPS); */
 
 	socket.emit('loggedIn', {
 		users: users.map(s => s.username),
-		messages: messages
+		messages: messages,
 	});
 
 	socket.on('newuser', username => {
 		console.log(`${username} à rejoint le tchat.`);
 		socket.username = username;
 		users.push(socket);
-
 		io.emit('userOnline', socket.username);
 	});
 
