@@ -9,7 +9,7 @@
 
 const express = require('express');
 const router = express.Router();
-router.use('/stream', require('./stream'));
-router.use('/users', require('./users'));
+// router.use('/stream', require('./stream'));
+router.use('/', require('./others'));
 
 module.exports = router;

@@ -15,11 +15,22 @@
         <v-col cols="6">
           <v-card width="500px" class="px-5">
             <v-card-title> Rejoindre un salon</v-card-title>
-            <v-text-field label="Entrer un pseudo"></v-text-field>
-            <v-text-field label="Entrer le nom du salon"></v-text-field>
+            <v-text-field 
+              label="Entrer un pseudo"            
+              v-model="pseudo">
+            </v-text-field>
+            <v-text-field 
+              label="Entrer le nom du salon"                         
+              v-model="room"
+            ></v-text-field>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn icon color="green">
+              <v-btn 
+              icon 
+              color="green"              
+                :to="{ name: 'room', params: { pseudo, room } }"
+                @click="sendInfo"
+              >
                 <v-icon> mdi-check</v-icon>
               </v-btn>
             </v-card-actions>
@@ -30,16 +41,20 @@
             <v-card-title> Créer un salon</v-card-title>
             <v-text-field
               label="Entrer un pseudo"
-              v-model="pseudo"
+              v-model="pseudoForCreateRoom"
             ></v-text-field>
-            <v-text-field label="Entrer un nom de salon"></v-text-field>
+            <v-text-field 
+              label="Entrer un nom de salon"                                                 
+              v-model="roomToCreate"
+            >
+            </v-text-field>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
                 icon
                 color="green"
-                :to="{ name: 'room', params: { pseudo } }"
-                @click="sendInfo"
+                :to="{ name: 'room', params: { pseudoForCreateRoom, roomToCreate } }"
+                @click="sendInfoForcreateRoom"
               >
                 <v-icon> mdi-check</v-icon>
               </v-btn>
@@ -51,16 +66,22 @@
   </div>
 </template>
 <script>
-import { eventBus } from "./eventBus";
+import { eventBus } from "../../eventBus";
 export default {
   data() {
     return {
       pseudo: "",
+      pseudoForCreateRoom: '',
+      room: '',
+      roomToCreate: ''
     };
   },
   methods: {
     sendInfo() {
-      eventBus.$emit("sendInfo", this.pseudo);
+      eventBus.$emit("sendInfo", this.pseudo, this.room);
+    },
+    sendInfoForcreateRoom() {
+      eventBus.$emit("sendInfoForcreateRoom", this.pseudoForCreateRoom, this.roomToCreate);
     },
   },
 };

@@ -37,9 +37,9 @@ const io = require('./socket').init(servListen);
 
 const cv = require('opencv4nodejs');
 const FPS = 60;
-const wCap = new cv.VideoCapture(0);
-wCap.set(cv.CAP_PROP_FRAME_WIDTH, 1000);
-wCap.set(cv.CAP_PROP_FRAME_HEIGHT, 600);
+// const wCap = new cv.VideoCapture(0);
+// wCap.set(cv.CAP_PROP_FRAME_WIDTH, 1000);
+// wCap.set(cv.CAP_PROP_FRAME_HEIGHT, 600);
 let users = [];
 let messages = [];
 let index = 0;
@@ -55,18 +55,22 @@ io.on('connection', socket => {
 		const image = cv.imencode('.jpg', frame).toString('base64');
 		socket.broadcast.emit('image', image);
 	}, 1000 / FPS); */
+	console.log('log input param : ' + socket.handshake.query.room);
+	let room = socket.handshake.query.room;
+	socket.join(room);
 
-	socket.emit('loggedIn', {
+	socket.in(room).emit('test', {
 		users: users.map(s => s.username),
-		messages: messages
-	});
+		messages: messages,
+		room: room
+	},);
 
 	socket.on('newuser', username => {
 		console.log(`${username} à rejoint le tchat.`);
 		socket.username = username;
 		users.push(socket);
 
-		io.emit('userOnline', socket.username);
+		io.in(room).emit('userOnline', socket.username);
 	});
 
 	socket.on('msg', msg => {
@@ -78,7 +82,7 @@ io.on('connection', socket => {
 		let msgEnvoi = []
 		msgEnvoi.push(message);
 
-		io.emit('msg', msgEnvoi);
+		io.in(room).emit('msg', msgEnvoi);
 
 		index++;
 	});
@@ -86,7 +90,7 @@ io.on('connection', socket => {
 	// Deconnexion
 	socket.on("disconnect", () => {
 		console.log(`${socket.username} à quitter le tchat.`);
-		io.emit("userLeft", socket.username);
+		io.in(room).emit("userLeft", socket.username);
 		users.splice(users.indexOf(socket), 1);
 	});
 });

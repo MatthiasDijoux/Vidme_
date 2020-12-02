@@ -40,15 +40,16 @@
 
     <script>
 import { io } from "socket.io-client";
-var options = {
-  rememberUpgrade: true,
-  transports: ["websocket"],
-  secure: true,
-  rejectUnauthorized: false,
-};
+// var options = {
+//   rememberUpgrade: true,
+//   transports: ["websocket"],
+//   secure: true,
+//   rejectUnauthorized: false,
+//   query:"room=room8"
+// };
 
 export default {
-  props: ["pseudo"],
+  props: ["pseudo","room"],
   data() {
     return {
       src: "",
@@ -57,7 +58,21 @@ export default {
       messages: [],
       msg: "",
       users: [],
-      socket: io.connect("http://127.0.0.1:3000/", options),
+      // options: {
+      //   rememberUpgrade: true,
+      //   transports: ["websocket"],
+      //   secure: true,
+      //   rejectUnauthorized: false,
+      //   query:"room="+this.room
+      // },
+      socket: io.connect("http://127.0.0.1:3000/", {
+          rememberUpgrade: true,
+          transports: ["websocket"],
+          secure: true,
+          rejectUnauthorized: false,
+          query:"room="+this.room
+        }
+      ),
     };
   },
   created() {
@@ -67,6 +82,7 @@ export default {
   },
   mounted() {
     console.log(this.pseudo);
+    console.log(this.room);
     console.log("ok");
     this.username = this.pseudo;
 
@@ -80,7 +96,9 @@ export default {
     getCamera() {},
     cutCamera() {},
     joinServer() {
-      this.socket.on("loggedIn", (data) => {
+
+      this.socket.on("test", (data) => {
+        console.log("DATA :", data)
         this.messages = data.messages;
         this.users = data.users;
         this.socket.emit("newuser", this.username);
